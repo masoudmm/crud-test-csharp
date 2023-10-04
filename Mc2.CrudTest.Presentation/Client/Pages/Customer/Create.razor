@@ -1,5 +1,6 @@
 ﻿@page "/Customer/Create"
-@using Mc2.CrudTest.Presentation.Application;
+@using Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
+@using Mc2.CrudTest.Presentation.Application.ViewModels;
 
 <PageTitle>Create Customer</PageTitle>
 
@@ -9,46 +10,42 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div>
-        <label>
-            Firstname:
-            <InputText @bind-Value="Model!.Firstname" />
-        </label>
+    <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+        <label class="form-label">First Name:</label>
+        <InputText class="form-control" @bind-Value="Model!.Firstname" />
     </div>
 
-    <div>
-        <label>
-            Lastname:
-            <InputText @bind-Value="Model!.Lastname" />
-        </label>
+    <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+        <label class="form-label">Last Name:</label>
+        <InputText class="form-control" @bind-Value="Model!.Lastname" />
     </div>
 
-    <div>
-        <label>
-            DateOfBirth:
-            <InputDate @bind-Value="Model!.DateOfBirth" />
-        </label>
+    <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+        <div class="form-group">
+            <label class="form-label">Date Of Birth:</label>
+            <InputDate class="form-control" @bind-Value="Model!.DateOfBirth" />
+        </div>
     </div>
 
-    <div>
-        <label>
-            PhoneNumber:
-            <InputText @bind-Value="Model!.PhoneNumber" />
-        </label>
+    <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+        <div class="form-group">
+            <label class="form-label">Phone Number:</label>
+            <InputText class="form-control" @bind-Value="Model!.PhoneNumber" />
+        </div>
     </div>
 
-    <div>
-        <label>
-            Email:
-            <InputText @bind-Value="Model!.Email" />
-        </label>
+    <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+        <div class="form-group">
+            <label class="form-label">Email:</label>
+            <InputText class="form-control" @bind-Value="Model!.Email" />
+        </div>
     </div>
 
-    <div>
-        <label>
-            BankAccountNumber:
-            <InputText @bind-Value="Model!.BankAccountNumber" />
-        </label>
+    <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+        <div class="form-group">
+            <label class="form-label">Bank Account Number:</label>
+            <InputText class="form-control" @bind-Value="Model!.BankAccountNumber" />
+        </div>
     </div>
 
     <input type="submit" class="btn btn-primary" value="Save" />
@@ -66,7 +63,21 @@
 
     async void ValidFormSubmitted(EditContext editContext)
     {
-        //Call CreateCustome logic from Application
-        //Check and Throw errors
+        var createdCustomerDto = await Sender.Send(new CreateCustomerCommand(Model.Firstname,
+        Model.Lastname,
+        Model.DateOfBirth,
+        Model.PhoneNumber,
+        Model.Email,
+        Model.BankAccountNumber));
+
+        Model = new CreateCustomerViewModel
+        {
+            Firstname = createdCustomerDto.Firstname,
+            Lastname = createdCustomerDto.Lastname,
+            DateOfBirth = createdCustomerDto.DateOfBirth,
+            PhoneNumber = createdCustomerDto.PhoneNumber,
+            Email = createdCustomerDto.Email,
+            BankAccountNumber = createdCustomerDto.BankAccountNumber
+        };
     }
 }

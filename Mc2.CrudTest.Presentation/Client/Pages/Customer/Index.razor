@@ -1,12 +1,14 @@
 ﻿@page "/Customer/Index"
-@using Mc2.CrudTest.Presentation.Application
+@using Mc2.CrudTest.Presentation.Application.Dtos;
+@using Mc2.CrudTest.Presentation.Application.Features.Queries;
+@inject NavigationManager NavigationManager
 
 <PageTitle>Customers</PageTitle>
 
 <h1>Customers</h1>
 
 <div class="vh-100">
-    <button class="btn btn-primary" href="Create">
+    <button class="btn btn-primary" @onclick="@(() => NavigationManager.NavigateTo("/Customer/Create"))">
         Create Customer
     </button>
 
@@ -48,20 +50,10 @@
 </div>
 
 @code {
-    private List<CustomerDto> Customers = new List<CustomerDto>();
+    private IReadOnlyList<CustomerDto> Customers = new List<CustomerDto>();
 
     protected override async Task OnInitializedAsync()
     {
-        Customers = Enumerable.Range(1, 5).Select(index => new CustomerDto
-            {
-                Id = index,
-                Firstname = $"Firstname {index}",
-                Lastname = $"Lastname {index}",
-                BankAccountNumber = $"BankAccountNumber {index}",
-                Email = $"Email {index}",
-                PhoneNumber = $"PhoneNumber {index}",
-                DateOfBirth = DateTime.UtcNow.AddDays(index),
-            })
-        .ToList();
+        Customers = await Sender.Send(new GetAllCustomersQuery());
     }
 }

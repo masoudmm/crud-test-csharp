@@ -1,5 +1,7 @@
 ﻿@page "/Customer/Edit/{id:int}"
-@using Mc2.CrudTest.Presentation.Application;
+@using Mc2.CrudTest.Presentation.Application.Features.Commands.Edit;
+@using Mc2.CrudTest.Presentation.Application.Features.Queries;
+@using Mc2.CrudTest.Presentation.Application.ViewModels;
 
 <PageTitle>Edit Customer</PageTitle>
 
@@ -16,40 +18,40 @@ else
         <ValidationSummary />
 
         <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
-            <label class="form-label">Firstname:</label>
+            <label class="form-label">First Name:</label>
             <InputText class="form-control" @bind-Value="Model!.Firstname" />
         </div>
 
         <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
-            <label class="form-label">Lastname:</label>
+            <label class="form-label">Last Name:</label>
             <InputText class="form-control" @bind-Value="Model!.Lastname" />
         </div>
 
         <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
             <div class="form-group">
-                <label class="form-label">DateOfBirth:</label>
+                <label class="form-label">Date Of Birth:</label>
                 <InputDate class="form-control" @bind-Value="Model!.DateOfBirth" />
             </div>
         </div>
 
         <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
             <div class="form-group">
-                <label class="form-label">PhoneNumber:</label>
+                <label class="form-label">Phone Number:</label>
                 <InputText class="form-control" @bind-Value="Model!.PhoneNumber" />
             </div>
         </div>
 
         <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
             <div class="form-group">
-                <label class="form-label">BankAccountNumber:</label>
-                <InputText class="form-control" @bind-Value="Model!.BankAccountNumber" />
+                <label class="form-label">Email:</label>
+                <InputText class="form-control" @bind-Value="Model!.Email" />
             </div>
         </div>
 
-        <div class="col-xl-4 col-lg-4 col-md-5 mb-5">
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
             <div class="form-group">
-                <label class="form-label">Firstname:</label>
-                <InputText class="form-control" @bind-Value="Model!.Firstname" />
+                <label class="form-label">Bank Account Number:</label>
+                <InputText class="form-control" @bind-Value="Model!.BankAccountNumber" />
             </div>
         </div>
 
@@ -65,21 +67,43 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        Model = new EditCustomerViewModel()
-            {
-                Firstname = $"Firstname",
-                Lastname = $"Lastname",
-                BankAccountNumber = $"BankAccountNumber",
-                Email = $"Email",
-                PhoneNumber = $"PhoneNumber",
-                DateOfBirth = DateTime.UtcNow,
-            };
+        var customerToEditDto = await Sender.Send(new GetCustomerByIdQuery());
+
+        Model = new EditCustomerViewModel
+        {
+            Id = customerToEditDto.Id,
+            Firstname = customerToEditDto.Firstname,
+            Lastname = customerToEditDto.Lastname,
+            DateOfBirth = customerToEditDto.DateOfBirth,
+            PhoneNumber = customerToEditDto.PhoneNumber,
+            Email = customerToEditDto.Email,
+            BankAccountNumber = customerToEditDto.BankAccountNumber
+        };
     }
 
     async void ValidFormSubmitted(EditContext editContext)
     {
-        //Add the Id to userInoputs
-        //Call the Edit from Application
-        //Check and Add Validation Errors
+        if (Model is null)
+        {
+            return;
+        }
+
+        var editedCustomerDto = await Sender.Send(new EditCustomerCommand(Model.Firstname,
+        Model.Lastname,
+        Model.DateOfBirth,
+        Model.PhoneNumber,
+        Model.Email,
+        Model.BankAccountNumber));
+
+        Model = new EditCustomerViewModel
+        {
+            Id = editedCustomerDto.Id,
+            Firstname = editedCustomerDto.Firstname,
+            Lastname = editedCustomerDto.Lastname,
+            DateOfBirth = editedCustomerDto.DateOfBirth,
+            PhoneNumber = editedCustomerDto.PhoneNumber,
+            Email = editedCustomerDto.Email,
+            BankAccountNumber = editedCustomerDto.BankAccountNumber
+        };
     }
 }
