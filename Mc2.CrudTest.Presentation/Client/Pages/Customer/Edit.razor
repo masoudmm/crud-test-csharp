@@ -1,0 +1,85 @@
+﻿@page "/Customer/Edit/{id:int}"
+@using Mc2.CrudTest.Presentation.Application;
+
+<PageTitle>Edit Customer</PageTitle>
+
+<h1>Edit</h1>
+
+@if (Model == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model=@Model OnSubmit=@ValidFormSubmitted>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <label class="form-label">Firstname:</label>
+            <InputText class="form-control" @bind-Value="Model!.Firstname" />
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <label class="form-label">Lastname:</label>
+            <InputText class="form-control" @bind-Value="Model!.Lastname" />
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <div class="form-group">
+                <label class="form-label">DateOfBirth:</label>
+                <InputDate class="form-control" @bind-Value="Model!.DateOfBirth" />
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <div class="form-group">
+                <label class="form-label">PhoneNumber:</label>
+                <InputText class="form-control" @bind-Value="Model!.PhoneNumber" />
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <div class="form-group">
+                <label class="form-label">BankAccountNumber:</label>
+                <InputText class="form-control" @bind-Value="Model!.BankAccountNumber" />
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-5">
+            <div class="form-group">
+                <label class="form-label">Firstname:</label>
+                <InputText class="form-control" @bind-Value="Model!.Firstname" />
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Save" />
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private EditCustomerViewModel? Model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = new EditCustomerViewModel()
+            {
+                Firstname = $"Firstname",
+                Lastname = $"Lastname",
+                BankAccountNumber = $"BankAccountNumber",
+                Email = $"Email",
+                PhoneNumber = $"PhoneNumber",
+                DateOfBirth = DateTime.UtcNow,
+            };
+    }
+
+    async void ValidFormSubmitted(EditContext editContext)
+    {
+        //Add the Id to userInoputs
+        //Call the Edit from Application
+        //Check and Add Validation Errors
+    }
+}

@@ -1,0 +1,67 @@
+﻿@page "/Customer/Index"
+@using Mc2.CrudTest.Presentation.Application
+
+<PageTitle>Customers</PageTitle>
+
+<h1>Customers</h1>
+
+<div class="vh-100">
+    <button class="btn btn-primary" href="Create">
+        Create Customer
+    </button>
+
+    <hr />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@nameof(CustomerDto.Firstname)</th>
+                <th>@nameof(CustomerDto.Lastname)</th>
+                <th>@nameof(CustomerDto.DateOfBirth)</th>
+                <th>@nameof(CustomerDto.PhoneNumber)</th>
+                <th>@nameof(CustomerDto.Email)</th>
+                <th>@nameof(CustomerDto.BankAccountNumber)</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Customers)
+            {
+                var editUrl = $"Customer/Edit/{customer.Id}";
+
+                <tr>
+                    <td>@customer.Firstname</td>
+                    <td>@customer.Lastname</td>
+                    <td>@customer.DateOfBirth.ToLongDateString()</td>
+                    <td>@customer.PhoneNumber</td>
+                    <td>@customer.Email</td>
+                    <td>@customer.BankAccountNumber</td>
+                    <td>
+                        <NavLink class="nav-link" href="@editUrl">
+                            <span class="mdi mdi-users" aria-hidden="true"></span> Edit
+                        </NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<CustomerDto> Customers = new List<CustomerDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Customers = Enumerable.Range(1, 5).Select(index => new CustomerDto
+            {
+                Id = index,
+                Firstname = $"Firstname {index}",
+                Lastname = $"Lastname {index}",
+                BankAccountNumber = $"BankAccountNumber {index}",
+                Email = $"Email {index}",
+                PhoneNumber = $"PhoneNumber {index}",
+                DateOfBirth = DateTime.UtcNow.AddDays(index),
+            })
+        .ToList();
+    }
+}

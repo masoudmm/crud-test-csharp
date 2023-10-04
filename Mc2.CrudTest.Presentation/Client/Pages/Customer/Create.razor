@@ -1,0 +1,72 @@
+﻿@page "/Customer/Create"
+@using Mc2.CrudTest.Presentation.Application;
+
+<PageTitle>Create Customer</PageTitle>
+
+<h1>Create</h1>
+
+<EditForm Model=@Model OnSubmit=@ValidFormSubmitted>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>
+            Firstname:
+            <InputText @bind-Value="Model!.Firstname" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Lastname:
+            <InputText @bind-Value="Model!.Lastname" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            DateOfBirth:
+            <InputDate @bind-Value="Model!.DateOfBirth" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            PhoneNumber:
+            <InputText @bind-Value="Model!.PhoneNumber" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Email:
+            <InputText @bind-Value="Model!.Email" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            BankAccountNumber:
+            <InputText @bind-Value="Model!.BankAccountNumber" />
+        </label>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Save" />
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private CreateCustomerViewModel Model = new CreateCustomerViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    async void ValidFormSubmitted(EditContext editContext)
+    {
+        //Call CreateCustome logic from Application
+        //Check and Throw errors
+    }
+}
