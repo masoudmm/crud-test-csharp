@@ -6,10 +6,11 @@ using MediatR;
 
 namespace Mc2.CrudTest.Presentation.Application.Features.Queries;
 
-public class GetCustomerByIdQuery : IRequest<CustomerDto> { };
+public record GetCustomerByIdQuery(int Id) : IRequest<CustomerDto>;
 public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, CustomerDto>
 {
     private readonly IMapper _mapper;
+    private int Id;
 
     public GetCustomerByIdQueryHandler(
         IMapper mapper)
@@ -21,14 +22,17 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
         GetCustomerByIdQuery request,
         CancellationToken cancellationToken)
     {
+        Id = request.Id;
+
         //TODO: Get customers from database
 
-        var customer = Customer.Create("FirstName",
-        "Lastname",
-        DateTime.UtcNow,
-        "PhoneNumber",
-        "Email",
-        "BankAccountNumber");
+        var customer = Customer.Create($"FirstName {Id}",
+        $"Lastname {Id}",
+        DateTime.UtcNow.AddDays(Id),
+        $"Phone {Id}",
+        $"Email@Email {Id}",
+        $"BankAccountNumber {Id}",
+        Id);
 
         return _mapper.Map<CustomerDto>(customer);
     }

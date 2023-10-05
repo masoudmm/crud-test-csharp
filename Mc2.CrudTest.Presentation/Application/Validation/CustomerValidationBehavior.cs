@@ -3,8 +3,9 @@ using MediatR;
 
 namespace Mc2.CrudTest.Presentation.Application.Validation;
 
-public class CustomerValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
- where TRequest : notnull
+public class CustomerValidationBehavior<TRequest, TResponse> : 
+    IPipelineBehavior<TRequest, TResponse>
+    where TRequest : notnull
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -32,9 +33,10 @@ public class CustomerValidationBehavior<TRequest, TResponse> : IPipelineBehavior
 
             if (failures.Any())
             {
-                throw new Exception(string.Join(", ", failures.Select(f => f.ErrorMessage)));
+                throw new Exceptions.ValidationFailureException(failures);
             }
         }
+
         return await next();
     }
 }

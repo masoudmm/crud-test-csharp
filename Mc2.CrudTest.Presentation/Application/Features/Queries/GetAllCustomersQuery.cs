@@ -28,9 +28,10 @@ public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery,
             $"Firstname {index}",
             $"Lastname {index}",
             DateTime.UtcNow.AddDays(index),
-            $"PhoneNumber {index}",
-            $"Email {index}",
-            $"BankAccountNumber {index}"
+            $"Phone {index}",
+            $"Email@email {index}",
+            $"BankAccountNumber {index}",
+            index
         ))
             .AsQueryable()
             .ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)

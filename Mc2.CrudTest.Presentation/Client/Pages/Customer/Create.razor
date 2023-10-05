@@ -1,29 +1,43 @@
 ﻿@page "/Customer/Create"
+@using Mc2.CrudTest.Presentation.Application.Dtos;
 @using Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
 @using Mc2.CrudTest.Presentation.Application.ViewModels;
+@using System.Text.Json;
 
 <PageTitle>Create Customer</PageTitle>
 
 <h1>Create</h1>
+<br />
 
-<EditForm Model=@Model OnSubmit=@ValidFormSubmitted>
+<EditForm Model=@Model OnValidSubmit=@ValidFormSubmitted>
     <DataAnnotationsValidator />
-    <ValidationSummary />
+    @if (ValidationErrors is not null)
+    {
+        <ul class="validation-errors">
+            @foreach (var errorItem in ValidationErrors)
+            {
+                <li class="validation-message">@errorItem.Key : @string.Join(", ", errorItem.Value)</li>
+            }
+        </ul>
+    }
 
     <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
         <label class="form-label">First Name:</label>
         <InputText class="form-control" @bind-Value="Model!.Firstname" />
+        <ValidationMessage For="() => Model!.Firstname" />
     </div>
 
     <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
         <label class="form-label">Last Name:</label>
         <InputText class="form-control" @bind-Value="Model!.Lastname" />
+        <ValidationMessage For="() => Model!.Lastname" />
     </div>
 
     <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
         <div class="form-group">
             <label class="form-label">Date Of Birth:</label>
             <InputDate class="form-control" @bind-Value="Model!.DateOfBirth" />
+            <ValidationMessage For="() => Model!.DateOfBirth" />
         </div>
     </div>
 
@@ -31,6 +45,7 @@
         <div class="form-group">
             <label class="form-label">Phone Number:</label>
             <InputText class="form-control" @bind-Value="Model!.PhoneNumber" />
+            <ValidationMessage For="() => Model!.PhoneNumber" />
         </div>
     </div>
 
@@ -38,6 +53,7 @@
         <div class="form-group">
             <label class="form-label">Email:</label>
             <InputText class="form-control" @bind-Value="Model!.Email" />
+            <ValidationMessage For="() => Model!.Email" />
         </div>
     </div>
 
@@ -45,6 +61,7 @@
         <div class="form-group">
             <label class="form-label">Bank Account Number:</label>
             <InputText class="form-control" @bind-Value="Model!.BankAccountNumber" />
+            <ValidationMessage For="() => Model!.BankAccountNumber" />
         </div>
     </div>
 
@@ -52,32 +69,44 @@
 </EditForm>
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
-
+    private IDictionary<string, string[]>? ValidationErrors;
     private CreateCustomerViewModel Model = new CreateCustomerViewModel();
 
     protected override async Task OnInitializedAsync()
     {
     }
 
-    async void ValidFormSubmitted(EditContext editContext)
+    async Task ValidFormSubmitted(EditContext editContext)
     {
-        var createdCustomerDto = await Sender.Send(new CreateCustomerCommand(Model.Firstname,
-        Model.Lastname,
-        Model.DateOfBirth,
-        Model.PhoneNumber,
-        Model.Email,
-        Model.BankAccountNumber));
+        var createdCustomerResponse = await Http.PostAsJsonAsync<CreateCustomerCommand>($"/api/Customers/Create",
+        new CreateCustomerCommand(Model.Firstname,
+            Model.Lastname,
+            Model.DateOfBirth,
+            Model.PhoneNumber,
+            Model.Email,
+            Model.BankAccountNumber));
 
-        Model = new CreateCustomerViewModel
+        if (createdCustomerResponse.IsSuccessStatusCode)
         {
-            Firstname = createdCustomerDto.Firstname,
-            Lastname = createdCustomerDto.Lastname,
-            DateOfBirth = createdCustomerDto.DateOfBirth,
-            PhoneNumber = createdCustomerDto.PhoneNumber,
-            Email = createdCustomerDto.Email,
-            BankAccountNumber = createdCustomerDto.BankAccountNumber
-        };
+            var createdCustomerDto = await createdCustomerResponse.Content.ReadFromJsonAsync<CustomerDto>();
+
+            Model = new CreateCustomerViewModel
+            {
+                Firstname = createdCustomerDto.Firstname,
+                Lastname = createdCustomerDto.Lastname,
+                DateOfBirth = createdCustomerDto.DateOfBirth,
+                PhoneNumber = createdCustomerDto.PhoneNumber,
+                Email = createdCustomerDto.Email,
+                BankAccountNumber = createdCustomerDto.BankAccountNumber
+            };
+        }
+        else if (createdCustomerResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            var validationProblemDetailsString = await createdCustomerResponse.Content.ReadAsStringAsync() ?? "{}";
+            var validationProblemDetails = JsonSerializer.Deserialize<ValidationProblemDetails>(validationProblemDetailsString);
+            ValidationErrors = validationProblemDetails?.Errors;
+        }
+
+        StateHasChanged();
     }
 }

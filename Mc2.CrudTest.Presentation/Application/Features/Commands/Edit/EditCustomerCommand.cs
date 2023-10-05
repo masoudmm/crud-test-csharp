@@ -5,18 +5,19 @@ using MediatR;
 
 namespace Mc2.CrudTest.Presentation.Application.Features.Commands.Edit;
 
-public record EditCustomerCommand(string Firstname,
+public record EditCustomerCommand(int Id,
+        string Firstname,
         string Lastname,
         DateTime DateOfBirth,
         string PhoneNumber,
         string Email,
         string BankAccountNumber) : IRequest<CustomerDto>;
 
-public class UpdateCustomerCommandHandler : IRequestHandler<EditCustomerCommand, CustomerDto>
+public class EditCustomerCommandHandler : IRequestHandler<EditCustomerCommand, CustomerDto>
 {
     private readonly IMapper _mapper;
 
-    public UpdateCustomerCommandHandler(IMapper mapper)
+    public EditCustomerCommandHandler(IMapper mapper)
     {
         _mapper = mapper;
     }
@@ -30,7 +31,8 @@ public class UpdateCustomerCommandHandler : IRequestHandler<EditCustomerCommand,
         request.DateOfBirth.AddDays(1),
         request.PhoneNumber + " edited!",
         request.Email + " edited!",
-        request.BankAccountNumber + " edited!");
+        request.BankAccountNumber + " edited!",
+        request.Id);
 
         //TODO: Update customer in database
 

@@ -1,11 +1,15 @@
 ﻿@page "/Customer/Edit/{id:int}"
+@using Mc2.CrudTest.Presentation.Application.Dtos;
+@using Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
 @using Mc2.CrudTest.Presentation.Application.Features.Commands.Edit;
 @using Mc2.CrudTest.Presentation.Application.Features.Queries;
 @using Mc2.CrudTest.Presentation.Application.ViewModels;
+@using System.Text.Json;
 
 <PageTitle>Edit Customer</PageTitle>
 
 <h1>Edit</h1>
+<br />
 
 @if (Model == null)
 {
@@ -13,24 +17,35 @@
 }
 else
 {
-    <EditForm Model=@Model OnSubmit=@ValidFormSubmitted>
+    <EditForm Model=@Model OnValidSubmit=@ValidFormSubmitted>
         <DataAnnotationsValidator />
-        <ValidationSummary />
-
+        @if (ValidationErrors is not null)
+        {
+            <ul class="validation-errors">
+                @foreach (var errorItem in ValidationErrors)
+                {
+                    <li class="validation-message">@errorItem.Key : @string.Join(", ", errorItem.Value)</li>
+                }
+            </ul>
+        }
+        
         <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
             <label class="form-label">First Name:</label>
             <InputText class="form-control" @bind-Value="Model!.Firstname" />
+            <ValidationMessage For="() => Model!.Firstname" />
         </div>
 
         <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
             <label class="form-label">Last Name:</label>
             <InputText class="form-control" @bind-Value="Model!.Lastname" />
+            <ValidationMessage For="() => Model!.Lastname" />
         </div>
 
         <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
             <div class="form-group">
                 <label class="form-label">Date Of Birth:</label>
                 <InputDate class="form-control" @bind-Value="Model!.DateOfBirth" />
+                <ValidationMessage For="() => Model!.DateOfBirth" />
             </div>
         </div>
 
@@ -38,6 +53,7 @@ else
             <div class="form-group">
                 <label class="form-label">Phone Number:</label>
                 <InputText class="form-control" @bind-Value="Model!.PhoneNumber" />
+                <ValidationMessage For="() => Model!.PhoneNumber" />
             </div>
         </div>
 
@@ -45,6 +61,7 @@ else
             <div class="form-group">
                 <label class="form-label">Email:</label>
                 <InputText class="form-control" @bind-Value="Model!.Email" />
+                <ValidationMessage For="() => Model!.Email" />
             </div>
         </div>
 
@@ -52,6 +69,7 @@ else
             <div class="form-group">
                 <label class="form-label">Bank Account Number:</label>
                 <InputText class="form-control" @bind-Value="Model!.BankAccountNumber" />
+                <ValidationMessage For="() => Model!.BankAccountNumber" />
             </div>
         </div>
 
@@ -63,11 +81,12 @@ else
     [Parameter]
     public int Id { get; set; }
 
+    private IDictionary<string, string[]>? ValidationErrors;
     private EditCustomerViewModel? Model;
 
     protected override async Task OnInitializedAsync()
     {
-        var customerToEditDto = await Sender.Send(new GetCustomerByIdQuery());
+        var customerToEditDto = await Http.GetFromJsonAsync<CustomerDto>($"/api/Customers/{Id}");
 
         Model = new EditCustomerViewModel
         {
@@ -88,22 +107,36 @@ else
             return;
         }
 
-        var editedCustomerDto = await Sender.Send(new EditCustomerCommand(Model.Firstname,
+        var customerEditResponse = await Http.PutAsJsonAsync<EditCustomerCommand>($"/api/Customers/Edit", new EditCustomerCommand(Id,
+        Model.Firstname,
         Model.Lastname,
         Model.DateOfBirth,
         Model.PhoneNumber,
         Model.Email,
         Model.BankAccountNumber));
 
-        Model = new EditCustomerViewModel
+        if (customerEditResponse.IsSuccessStatusCode)
         {
-            Id = editedCustomerDto.Id,
-            Firstname = editedCustomerDto.Firstname,
-            Lastname = editedCustomerDto.Lastname,
-            DateOfBirth = editedCustomerDto.DateOfBirth,
-            PhoneNumber = editedCustomerDto.PhoneNumber,
-            Email = editedCustomerDto.Email,
-            BankAccountNumber = editedCustomerDto.BankAccountNumber
-        };
+            var editedCustomerDto = await customerEditResponse.Content.ReadFromJsonAsync<CustomerDto>();
+
+            Model = new EditCustomerViewModel
+                {
+                    Id = editedCustomerDto.Id,
+                    Firstname = editedCustomerDto.Firstname,
+                    Lastname = editedCustomerDto.Lastname,
+                    DateOfBirth = editedCustomerDto.DateOfBirth,
+                    PhoneNumber = editedCustomerDto.PhoneNumber,
+                    Email = editedCustomerDto.Email,
+                    BankAccountNumber = editedCustomerDto.BankAccountNumber
+                };
+        }
+        else if (customerEditResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            var validationProblemDetailsString = await customerEditResponse.Content.ReadAsStringAsync() ?? "{}";
+            var validationProblemDetails = JsonSerializer.Deserialize<ValidationProblemDetails>(validationProblemDetailsString);
+            ValidationErrors = validationProblemDetails?.Errors;
+        }
+
+        StateHasChanged();
     }
 }

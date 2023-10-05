@@ -17,7 +17,8 @@ public class EditCustomerCommandValidator : AbstractValidator<EditCustomerComman
 
         RuleFor(m => m.DateOfBirth)
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .GreaterThan(DateTime.UtcNow.AddYears(-100));
 
         RuleFor(m => m.PhoneNumber)
             .NotNull()

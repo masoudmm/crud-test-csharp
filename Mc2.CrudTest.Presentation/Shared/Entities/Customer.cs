@@ -14,7 +14,8 @@ public class Customer
     {
     }
 
-    public void Edit(string firstname,
+    public void Edit(int id, 
+        string firstname,
         string lastname,
         DateTime dateOfBirth,
         string phoneNumber,
@@ -24,15 +25,22 @@ public class Customer
         //TODO: Add edit event
     }
 
+    public void Delete(int id)
+    {
+        //TODO: Add delete event
+    }
+
     public static Customer Create(string firstname,
         string lastname,
         DateTime dateOfBirth,
         string phoneNumber,
         string email,
-        string bankAccountNumber)
+        string bankAccountNumber,
+        int id = 0)
     {
         var customer = new Customer()
         {
+            Id = id,
             Firstname = firstname,
             Lastname = lastname,
             DateOfBirth = dateOfBirth,
