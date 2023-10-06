@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using Mc2.CrudTest.Presentation.Application.Dtos;
-using Mc2.CrudTest.Presentation.Shared.Entities;
+﻿using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
+using Mc2.CrudTest.Presentation.Application.Exceptions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mc2.CrudTest.Presentation.Application.Features.Commands.Edit;
 
@@ -9,23 +9,37 @@ public record DeleteCustomerCommand(int Id) : IRequest<int>;
 
 public class DeleteCustomerCommanddHandler : IRequestHandler<DeleteCustomerCommand, int>
 {
-    private readonly IMapper _mapper;
+    private readonly IApplicationDbContext _dbContext;
     private int Id;
 
-    public DeleteCustomerCommanddHandler(IMapper mapper)
+    public DeleteCustomerCommanddHandler(IApplicationDbContext dbContext)
     {
-        _mapper = mapper;
+        _dbContext = dbContext;
     }
 
-    public async Task<int> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(DeleteCustomerCommand request, 
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         Id = request.Id;
 
-        //TODO: Delete customer from database
+        var customerToDelete = await _dbContext
+            .Customers
+            .FirstOrDefaultAsync(c => c.Id == Id, cancellationToken);
 
-        return Id;
+        if (customerToDelete is null)
+        {
+            throw new DbEntityNotFoundException("Customer", Id);
+        }
+
+        customerToDelete.Delete();
+
+        _dbContext.Customers.Remove(customerToDelete);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return customerToDelete.Id;
     }
 }
 

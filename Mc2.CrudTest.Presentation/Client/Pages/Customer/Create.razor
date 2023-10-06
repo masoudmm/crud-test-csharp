@@ -11,10 +11,10 @@
 
 <EditForm Model=@Model OnValidSubmit=@ValidFormSubmitted>
     <DataAnnotationsValidator />
-    @if (ValidationErrors is not null)
+    @if (Errors is not null)
     {
         <ul class="validation-errors">
-            @foreach (var errorItem in ValidationErrors)
+            @foreach (var errorItem in Errors)
             {
                 <li class="validation-message">@errorItem.Key : @string.Join(", ", errorItem.Value)</li>
             }
@@ -69,11 +69,20 @@
 </EditForm>
 
 @code {
-    private IDictionary<string, string[]>? ValidationErrors;
+    private IDictionary<string, string[]>? Errors;
     private CreateCustomerViewModel Model = new CreateCustomerViewModel();
 
     protected override async Task OnInitializedAsync()
     {
+        Model = new CreateCustomerViewModel()
+        {
+            Firstname = "John",
+            Lastname = "Doe",
+            DateOfBirth = new DateTime(1980, 1, 1),
+            PhoneNumber = "1111",
+            Email = "1@1111",
+            BankAccountNumber = "112233444"
+        };
     }
 
     async Task ValidFormSubmitted(EditContext editContext)
@@ -90,21 +99,23 @@
         {
             var createdCustomerDto = await createdCustomerResponse.Content.ReadFromJsonAsync<CustomerDto>();
 
-            Model = new CreateCustomerViewModel
-            {
-                Firstname = createdCustomerDto.Firstname,
-                Lastname = createdCustomerDto.Lastname,
-                DateOfBirth = createdCustomerDto.DateOfBirth,
-                PhoneNumber = createdCustomerDto.PhoneNumber,
-                Email = createdCustomerDto.Email,
-                BankAccountNumber = createdCustomerDto.BankAccountNumber
-            };
+            Model = new CreateCustomerViewModel();
+
+            Errors = null;
         }
         else if (createdCustomerResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
             var validationProblemDetailsString = await createdCustomerResponse.Content.ReadAsStringAsync() ?? "{}";
             var validationProblemDetails = JsonSerializer.Deserialize<ValidationProblemDetails>(validationProblemDetailsString);
-            ValidationErrors = validationProblemDetails?.Errors;
+            Errors = validationProblemDetails?.Errors;
+        }
+        else if (createdCustomerResponse.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            var problemDetailsString = await createdCustomerResponse.Content.ReadAsStringAsync() ?? "{}";
+            var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(problemDetailsString);
+
+            Errors = new Dictionary<string, string[]>() { };
+            Errors.Add(problemDetails?.Title ?? "", new string[1] { problemDetails?.Detail ?? problemDetailsString ?? "ServerInternalError" });
         }
 
         StateHasChanged();

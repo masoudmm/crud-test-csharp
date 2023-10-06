@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using Mc2.CrudTest.Presentation.Application.Common;
+using PhoneNumbers;
 
 namespace Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
 
@@ -6,31 +8,48 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
 {
     public CreateCustomerCommandValidator()
     {
-        //TODO: Add real validation rules
-
-        RuleFor(m => m.Firstname)
+        RuleFor(c => c.Firstname)
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .Length(3, 30);
 
-        RuleFor(m => m.Lastname)
+        RuleFor(c => c.Lastname)
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .Length(3, 60);
 
-        RuleFor(m => m.DateOfBirth)
+        RuleFor(c => c.DateOfBirth)
             .NotNull()
             .NotEmpty()
             .GreaterThan(DateTime.UtcNow.AddYears(-100));
 
-        RuleFor(m => m.PhoneNumber)
+        RuleFor(c => c.PhoneNumber)
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .Length(4, 15);
 
-        RuleFor(m => m.Email)
-            .NotNull()
-            .NotEmpty();
+        RuleFor(c => c.PhoneNumber)
+            .Must((phoneNumber) =>
+            {
+                //TODO: Check if it is the right way...
+                var result = PhoneNumberUtil.IsViablePhoneNumber(PhoneNumberUtil.ExtractPossibleNumber(phoneNumber));
+                return result;
+            })
+            .WithName("PhoneNumber is invalid");
 
-        RuleFor(m => m.BankAccountNumber)
+        RuleFor(c => c.Email)
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .Length(6, 60)
+            .EmailAddress();
+
+        RuleFor(c => c.BankAccountNumber)
+            .NotNull()
+            .NotEmpty()
+            .Length(6, 20);
+
+        RuleFor(c => c.BankAccountNumber)
+            .Must(ValidationHelpers.DutchBankAccountNumberRegx().IsMatch)
+            .WithName("BankAccountNumber format is invalid");
     }
 }

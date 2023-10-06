@@ -1,19 +1,22 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
 using Mc2.CrudTest.Presentation.Application.Dtos;
-using Mc2.CrudTest.Presentation.Shared.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mc2.CrudTest.Presentation.Application.Features.Queries;
 
 public class GetAllCustomersQuery : IRequest<IReadOnlyList<CustomerDto>> { };
+
 public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery, IReadOnlyList<CustomerDto>>
 {
+    private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public GetAllCustomersQueryHandler(
+    public GetAllCustomersQueryHandler(IApplicationDbContext dbContext,
         IMapper mapper)
     {
+        _dbContext = dbContext;
         _mapper = mapper;
     }
 
@@ -21,20 +24,10 @@ public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery,
         GetAllCustomersQuery request,
         CancellationToken cancellationToken)
     {
-        //TODO: Get customers from database
+        var customers = await _dbContext
+            .Customers
+            .ToListAsync();
 
-        return Enumerable.Range(1, 5).Select(index => Customer.Create
-        (
-            $"Firstname {index}",
-            $"Lastname {index}",
-            DateTime.UtcNow.AddDays(index),
-            $"Phone {index}",
-            $"Email@email {index}",
-            $"BankAccountNumber {index}",
-            index
-        ))
-            .AsQueryable()
-            .ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
-            .ToList();
+        return _mapper.Map<IReadOnlyList<CustomerDto>>(customers);
     }
 }

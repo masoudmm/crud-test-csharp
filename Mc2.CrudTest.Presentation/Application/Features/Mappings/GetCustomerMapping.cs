@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Mc2.CrudTest.Presentation.Application.Dtos;
 using Mc2.CrudTest.Presentation.Shared.Entities;
+
 namespace Mc2.CrudTest.Presentation.Application.Features.Mappings;
 
 public class GetCustomerMapping : Profile

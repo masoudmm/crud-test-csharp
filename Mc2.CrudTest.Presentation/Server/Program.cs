@@ -3,10 +3,12 @@ using Mc2.CrudTest.Presentation.Application.Dtos;
 using Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
 using Mc2.CrudTest.Presentation.Application.Features.Commands.Edit;
 using Mc2.CrudTest.Presentation.Application.Features.Queries;
+using Mc2.CrudTest.Presentation.Infrastructure;
 using Mc2.CrudTest.Presentation.Server;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mc2.CrudTest.Presentation
 {
@@ -21,6 +23,7 @@ namespace Mc2.CrudTest.Presentation
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.AddApplication();
+            builder.Services.AddInfrastructure(builder.Configuration);
 
             var app = builder.Build();
 
@@ -37,8 +40,8 @@ namespace Mc2.CrudTest.Presentation
             }
 
             app.UseHttpsRedirection();
-
             app.UseBlazorFrameworkFiles();
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -47,8 +50,6 @@ namespace Mc2.CrudTest.Presentation
             app.MapRazorPages();
             app.MapControllers();
             app.MapFallbackToFile("index.html");
-
-            app.MapGet("/api/Test", () => "ooookokokokokokkkkkkkkkkkkkkkkkkkkkkkkk");
 
             app.MapGet("/api/Customers", (ISender sender,
                 CancellationToken ct) => sender.Send(new GetAllCustomersQuery(), ct))

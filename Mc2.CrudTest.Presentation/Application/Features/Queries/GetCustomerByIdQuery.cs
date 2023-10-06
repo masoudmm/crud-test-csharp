@@ -1,20 +1,24 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
 using Mc2.CrudTest.Presentation.Application.Dtos;
-using Mc2.CrudTest.Presentation.Shared.Entities;
+using Mc2.CrudTest.Presentation.Application.Exceptions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mc2.CrudTest.Presentation.Application.Features.Queries;
 
 public record GetCustomerByIdQuery(int Id) : IRequest<CustomerDto>;
+
 public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, CustomerDto>
 {
+    private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
     private int Id;
 
-    public GetCustomerByIdQueryHandler(
+    public GetCustomerByIdQueryHandler(IApplicationDbContext dbContext,
         IMapper mapper)
     {
+        _dbContext = dbContext;
         _mapper = mapper;
     }
 
@@ -24,16 +28,16 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
     {
         Id = request.Id;
 
-        //TODO: Get customers from database
+        var customer = await _dbContext
+            .Customers
+            .FirstOrDefaultAsync(c => c.Id == Id,
+            cancellationToken);
 
-        var customer = Customer.Create($"FirstName {Id}",
-        $"Lastname {Id}",
-        DateTime.UtcNow.AddDays(Id),
-        $"Phone {Id}",
-        $"Email@Email {Id}",
-        $"BankAccountNumber {Id}",
-        Id);
+        if (customer is not null)
+        {
+            return _mapper.Map<CustomerDto>(customer);
+        }
 
-        return _mapper.Map<CustomerDto>(customer);
+        throw new DbEntityNotFoundException("Customer", Id);
     }
 }

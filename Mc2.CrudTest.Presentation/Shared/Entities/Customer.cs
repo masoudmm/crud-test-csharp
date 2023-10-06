@@ -22,10 +22,17 @@ public class Customer
         string email,
         string bankAccountNumber)
     {
+        Firstname = firstname;
+        Lastname = lastname;
+        DateOfBirth = dateOfBirth;
+        PhoneNumber = phoneNumber;
+        Email = email;
+        BankAccountNumber = bankAccountNumber;
+
         //TODO: Add edit event
     }
 
-    public void Delete(int id)
+    public void Delete()
     {
         //TODO: Add delete event
     }

@@ -18,6 +18,15 @@ public static class ExceptionFilter
                     case ValidationFailureException validationFailureException:
                         result = Results.ValidationProblem(validationFailureException.Failures);
                         break;
+
+                    case DbEntityNotFoundException dbEntityNotFoundException:
+                    case DbEntityAlreadyExistException DbEntityAlreadyExistException:
+                        result = Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status500InternalServerError);
+                        break;
+
+                    default:
+                        result = Results.Problem(detail: "Operation Failed!", statusCode: StatusCodes.Status500InternalServerError);
+                        break;
                 }
 
                 await result.ExecuteAsync(httpContext);
