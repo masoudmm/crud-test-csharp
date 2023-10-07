@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Mc2.CrudTesc.Presentation.Infrastructure;
+namespace Mc2.CrudTest.Presentation.Infrastructure.Storage;
 
 public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer>
 {
@@ -17,7 +17,7 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
         builder.Property(c => c.Firstname)
             .HasMaxLength(30)
             .IsRequired();
-        
+
         builder.Property(c => c.Lastname)
             .HasMaxLength(60)
             .IsRequired();
@@ -27,7 +27,7 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
 
         builder.ToTable(c =>
         {
-            c.HasCheckConstraint("CK_Customer_DateOfBirth_validation_notAheadOfCurentTime", 
+            c.HasCheckConstraint("CK_Customer_DateOfBirth_validation_notAheadOfCurentTime",
                 "DateOfBirth <= GETDATE()");
 
             c.HasCheckConstraint("CK_Customer_DateOfBirth_validation_notGreaterThenOnHundred",
@@ -37,7 +37,7 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
         builder.Property(c => c.BankAccountNumber)
             .HasMaxLength(20)
             .IsRequired();
-        
+
         builder.Property(c => c.Email)
             .HasMaxLength(60)
             .IsRequired();
@@ -52,11 +52,11 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
         builder.HasIndex(c => c.Email)
             .IsUnique();
 
-        builder.HasIndex(c => new 
-        { 
-            c.Firstname, 
+        builder.HasIndex(c => new
+        {
+            c.Firstname,
             c.Lastname,
-            c.DateOfBirth 
+            c.DateOfBirth
         }).IsUnique();
     }
 }

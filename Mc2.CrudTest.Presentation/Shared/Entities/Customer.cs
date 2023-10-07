@@ -1,6 +1,13 @@
-﻿namespace Mc2.CrudTest.Presentation.Shared.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Mc2.CrudTest.Presentation.Shared.Event;
 
-public class Customer
+namespace Mc2.CrudTest.Presentation.Shared.Entities;
+
+public record CustomerCreatedEvent(Customer NewCustomer) : DomainEvent;
+public record CustomerEditedEvent(Customer NewCustomer) : DomainEvent;
+public record CustomerDeletedEvent(int deletedCustomerId) : DomainEvent;
+
+public class Customer : IPublishesDomainEvents
 {
     public int Id { get; private set; }
     public string Firstname { get; private set; }
@@ -10,11 +17,13 @@ public class Customer
     public string Email { get; private set; }
     public string BankAccountNumber { get; private set; }
 
+    private readonly List<DomainEvent> _domainEvents = new();
+
     private Customer()
     {
     }
 
-    public void Edit(int id, 
+    public void Edit(int id,
         string firstname,
         string lastname,
         DateTime dateOfBirth,
@@ -29,12 +38,12 @@ public class Customer
         Email = email;
         BankAccountNumber = bankAccountNumber;
 
-        //TODO: Add edit event
+        AddDomainEvent(new CustomerEditedEvent(this));
     }
 
     public void Delete()
     {
-        //TODO: Add delete event
+        AddDomainEvent(new CustomerDeletedEvent(Id));
     }
 
     public static Customer Create(string firstname,
@@ -56,8 +65,13 @@ public class Customer
             BankAccountNumber = bankAccountNumber
         };
 
-        //TODO: Add create event
+        customer.AddDomainEvent(new CustomerCreatedEvent(customer));
 
         return customer;
     }
+
+    [NotMapped]
+    public ICollection<DomainEvent> DomainEvents => _domainEvents;
+
+    public void AddDomainEvent(DomainEvent domainEvent) => _domainEvents.Add(domainEvent);
 }

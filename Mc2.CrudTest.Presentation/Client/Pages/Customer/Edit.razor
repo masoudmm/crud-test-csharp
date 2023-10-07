@@ -1,9 +1,9 @@
 ﻿@page "/Customer/Edit/{id:int}"
+
 @using Mc2.CrudTest.Presentation.Application.Dtos;
-@using Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
 @using Mc2.CrudTest.Presentation.Application.Features.Commands.Edit;
-@using Mc2.CrudTest.Presentation.Application.Features.Queries;
 @using Mc2.CrudTest.Presentation.Application.ViewModels;
+@using Mc2.CrudTest.Presentation.Client.Models;
 @using System.Text.Json;
 
 <PageTitle>Edit Customer</PageTitle>
@@ -132,6 +132,9 @@ else
 
             Errors = null;
         }
+        //TODO: Remove doublicate codes
+        //TODO: Handle other status codes
+        //TODO: Create a custom component for displaying errors
         else if (customerEditResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
             var validationProblemDetailsString = await customerEditResponse.Content.ReadAsStringAsync() ?? "{}";

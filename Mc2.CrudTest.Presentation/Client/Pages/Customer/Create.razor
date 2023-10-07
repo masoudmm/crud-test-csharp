@@ -3,6 +3,7 @@
 @using Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
 @using Mc2.CrudTest.Presentation.Application.ViewModels;
 @using System.Text.Json;
+@using Mc2.CrudTest.Presentation.Client.Models;
 
 <PageTitle>Create Customer</PageTitle>
 
@@ -103,6 +104,9 @@
 
             Errors = null;
         }
+        //TODO: Remove doublicate codes
+        //TODO: Handle other status codes
+        //TODO: Create a custom component for displaying errors
         else if (createdCustomerResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
             var validationProblemDetailsString = await createdCustomerResponse.Content.ReadAsStringAsync() ?? "{}";

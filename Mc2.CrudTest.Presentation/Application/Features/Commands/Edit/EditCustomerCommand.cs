@@ -2,7 +2,6 @@
 using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
 using Mc2.CrudTest.Presentation.Application.Dtos;
 using Mc2.CrudTest.Presentation.Application.Exceptions;
-using Mc2.CrudTest.Presentation.Shared.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
