@@ -1,20 +1,22 @@
-using Mc2.CrudTest.Presentation.Client;
+using Mc2.CrudTest.Presentation.Application;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-namespace Mc2.CrudTest.Presentation.Client
+namespace Mc2.CrudTest.Presentation.Client;
+
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("#app");
-            builder.RootComponents.Add<HeadOutlet>("head::after");
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+        builder.Services.AddApplication();
 
-            await builder.Build().RunAsync();
-        }
+        builder.RootComponents.Add<App>("#app");
+        builder.RootComponents.Add<HeadOutlet>("head::after");
+
+        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+        await builder.Build().RunAsync();
     }
 }
