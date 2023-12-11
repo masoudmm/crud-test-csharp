@@ -1,5 +1,5 @@
 ﻿using MediatR;
 
-namespace Mc2.CrudTest.Presentation.Shared.Event;
+namespace Shared.Event;
 
 public record DomainEvent : INotification;

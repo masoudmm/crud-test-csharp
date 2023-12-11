@@ -1,4 +1,4 @@
-﻿using Mc2.CrudTest.Presentation.Application.ViewModels;
+﻿using Application.ViewModels;
 
 namespace Mc2.CrudTest.AcceptanceTests.Steps;
 

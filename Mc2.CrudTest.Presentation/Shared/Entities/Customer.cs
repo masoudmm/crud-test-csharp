@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Mc2.CrudTest.Presentation.Shared.Event;
+using Shared.Event;
 
-namespace Mc2.CrudTest.Presentation.Shared.Entities;
+namespace Shared.Entities;
 
 public record CustomerCreatedEvent(Customer NewCustomer) : DomainEvent;
 public record CustomerEditedEvent(Customer NewCustomer) : DomainEvent;

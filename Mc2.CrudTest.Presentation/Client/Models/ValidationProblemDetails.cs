@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Mc2.CrudTest.Presentation.Client.Models;
+namespace Client.Models;
 
 public class ValidationProblemDetails
 {

@@ -1,7 +1,7 @@
-using Mc2.CrudTest.Presentation.Application;
-using Mc2.CrudTest.Presentation.Infrastructure;
-using Mc2.CrudTest.Presentation.Server.Extentions;
-using Mc2.CrudTest.Presentation.Server.Filters;
+using Application;
+using Infrastructure;
+using Server.Extentions;
+using Server.Filters;
 
 namespace Mc2.CrudTest.Presentation
 {

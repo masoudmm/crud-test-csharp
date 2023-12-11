@@ -1,7 +1,7 @@
-﻿using Mc2.CrudTest.Presentation.Application.Exceptions;
+﻿using Application.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace Mc2.CrudTest.Presentation.Server.Filters;
+namespace Server.Filters;
 
 public static class ExceptionFilter
 {

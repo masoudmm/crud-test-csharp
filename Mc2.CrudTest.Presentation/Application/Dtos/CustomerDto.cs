@@ -1,4 +1,4 @@
-﻿namespace Mc2.CrudTest.Presentation.Application.Dtos;
+﻿namespace Application.Dtos;
 
 public class CustomerDto
 {

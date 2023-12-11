@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 
-namespace Mc2.CrudTest.Presentation.Application.Validation;
+namespace Application.Validation;
 
 public class CustomerValidationBehavior<TRequest, TResponse> : 
     IPipelineBehavior<TRequest, TResponse>

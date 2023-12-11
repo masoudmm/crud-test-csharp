@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Mc2.CrudTest.Presentation\Client\Mc2.CrudTest.Presentation.Client.csproj" />
+      <ProjectReference Include="..\Mc2.CrudTest.Presentation\Client\Client.csproj" />
     </ItemGroup>
 
 </Project>

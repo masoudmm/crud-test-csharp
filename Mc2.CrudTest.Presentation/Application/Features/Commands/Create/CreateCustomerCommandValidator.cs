@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using Mc2.CrudTest.Presentation.Application.Common;
+using Application.Common;
 using PhoneNumbers;
 
-namespace Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
+namespace Application.Features.Commands.Create;
 
 public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
 {

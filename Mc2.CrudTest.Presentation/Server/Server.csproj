@@ -15,9 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Mc2.CrudTest.Presentation.Application.csproj" />
-    <ProjectReference Include="..\Client\Mc2.CrudTest.Presentation.Client.csproj" />
-    <ProjectReference Include="..\Shared\Mc2.CrudTest.Presentation.Shared.csproj" />
+    <ProjectReference Include="..\Client\Client.csproj" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
 

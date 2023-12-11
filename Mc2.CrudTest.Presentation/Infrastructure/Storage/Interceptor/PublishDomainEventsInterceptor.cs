@@ -1,8 +1,8 @@
-﻿using Mc2.CrudTest.Presentation.Shared.Event;
+﻿using Shared.Event;
 using MediatR;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Mc2.CrudTest.Presentation.Infrastructure.Storage.Interceptor;
+namespace Infrastructure.Storage.Interceptor;
 
 public class PublishDomainEventsInterceptor : SaveChangesInterceptor
 {

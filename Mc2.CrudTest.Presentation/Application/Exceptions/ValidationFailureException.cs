@@ -1,6 +1,6 @@
 ﻿using FluentValidation.Results;
 
-namespace Mc2.CrudTest.Presentation.Application.Exceptions;
+namespace Application.Exceptions;
 
 public class ValidationFailureException : Exception
 {

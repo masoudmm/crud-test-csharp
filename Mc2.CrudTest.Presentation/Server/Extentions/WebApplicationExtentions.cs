@@ -1,12 +1,11 @@
-﻿using Mc2.CrudTest.Presentation.Application.Dtos;
-using Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
-using Mc2.CrudTest.Presentation.Application.Features.Commands.Edit;
-using Mc2.CrudTest.Presentation.Application.Features.Queries;
+﻿using Application.Dtos;
+using Application.Features.Commands.Create;
+using Application.Features.Commands.Edit;
+using Application.Features.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
-namespace Mc2.CrudTest.Presentation.Server.Extentions;
+namespace Server.Extentions;
 
 public static class WebApplicationExtentions
 {

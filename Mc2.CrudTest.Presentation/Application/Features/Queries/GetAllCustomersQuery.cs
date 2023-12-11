@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
-using Mc2.CrudTest.Presentation.Application.Dtos;
+using Application.Common.Interfaces;
+using Application.Dtos;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mc2.CrudTest.Presentation.Application.Features.Queries;
+namespace Application.Features.Queries;
 
 public class GetAllCustomersQuery : IRequest<IReadOnlyList<CustomerDto>> { };
 
@@ -28,6 +28,8 @@ public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery,
             .Customers
             .ToListAsync();
 
-        return _mapper.Map<IReadOnlyList<CustomerDto>>(customers);
+        var customerDtos = _mapper.Map<IReadOnlyList<CustomerDto>>(customers);
+
+        return customerDtos;
     }
 }
