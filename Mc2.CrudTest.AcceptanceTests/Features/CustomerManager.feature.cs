@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Mc2.CrudTest.AcceptanceTests.Features
+namespace AcceptanceTests.Features
 {
     using TechTalk.SpecFlow;
     using System;

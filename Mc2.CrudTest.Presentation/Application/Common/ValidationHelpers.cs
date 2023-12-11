@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Mc2.CrudTest.Presentation.Application.Common
+namespace Application.Common
 {
     internal static partial class ValidationHelpers
     {

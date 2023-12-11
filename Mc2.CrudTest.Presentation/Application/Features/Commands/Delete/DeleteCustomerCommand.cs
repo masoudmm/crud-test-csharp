@@ -1,9 +1,9 @@
-﻿using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
-using Mc2.CrudTest.Presentation.Application.Exceptions;
+﻿using Application.Common.Interfaces;
+using Application.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mc2.CrudTest.Presentation.Application.Features.Commands.Edit;
+namespace Application.Features.Commands.Edit;
 
 public record DeleteCustomerCommand(int Id) : IRequest<int>;
 

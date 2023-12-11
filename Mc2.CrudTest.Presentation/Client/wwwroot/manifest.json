@@ -1,6 +1,6 @@
 {
-  "name": "Mc2.CrudTest.Presentation",
-  "short_name": "Mc2.CrudTest.Presentation",
+  "name": "CustomerCrud",
+  "short_name": "CustomerCrud",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

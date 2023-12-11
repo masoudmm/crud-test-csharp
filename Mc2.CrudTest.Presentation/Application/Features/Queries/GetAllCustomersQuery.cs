@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
-using Mc2.CrudTest.Presentation.Application.Dtos;
+using Application.Common.Interfaces;
+using Application.Dtos;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mc2.CrudTest.Presentation.Application.Features.Queries;
+namespace Application.Features.Queries;
 
 public class GetAllCustomersQuery : IRequest<IReadOnlyList<CustomerDto>> { };
 

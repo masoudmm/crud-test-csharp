@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
-using Mc2.CrudTest.Presentation.Application.Dtos;
-using Mc2.CrudTest.Presentation.Application.Exceptions;
-using Mc2.CrudTest.Presentation.Shared.Entities;
+using Application.Common.Interfaces;
+using Application.Dtos;
+using Application.Exceptions;
+using Shared.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mc2.CrudTest.Presentation.Application.Features.Commands.Create;
+namespace Application.Features.Commands.Create;
 
 public record CreateCustomerCommand(string Firstname,
         string Lastname,

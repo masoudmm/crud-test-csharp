@@ -1,8 +1,8 @@
-﻿using Mc2.CrudTest.Presentation.Shared.Entities;
+﻿using Shared.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Mc2.CrudTest.Presentation.Infrastructure.Storage;
+namespace Infrastructure.Storage;
 
 public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer>
 {

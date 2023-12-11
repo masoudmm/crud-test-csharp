@@ -1,7 +1,7 @@
-﻿using Mc2.CrudTest.Presentation.Shared.Entities;
+﻿using Shared.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mc2.CrudTest.Presentation.Application.Common.Interfaces;
+namespace Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {

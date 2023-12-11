@@ -1,11 +1,11 @@
-﻿using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
-using Mc2.CrudTest.Presentation.Infrastructure.Storage;
-using Mc2.CrudTest.Presentation.Infrastructure.Storage.Interceptor;
+﻿using Application.Common.Interfaces;
+using Infrastructure.Storage;
+using Infrastructure.Storage.Interceptor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mc2.CrudTest.Presentation.Infrastructure;
+namespace Infrastructure;
 
 public static class DependencyInjection
 {

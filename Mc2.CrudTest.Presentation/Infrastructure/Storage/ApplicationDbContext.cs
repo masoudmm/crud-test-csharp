@@ -1,10 +1,10 @@
-﻿using Mc2.CrudTest.Presentation.Application.Common.Interfaces;
-using Mc2.CrudTest.Presentation.Infrastructure.Storage.Interceptor;
-using Mc2.CrudTest.Presentation.Shared.Entities;
+﻿using Application.Common.Interfaces;
+using Infrastructure.Storage.Interceptor;
+using Shared.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace Mc2.CrudTest.Presentation.Infrastructure.Storage;
+namespace Infrastructure.Storage;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {

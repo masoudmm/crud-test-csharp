@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Mc2.CrudTest.Presentation.Application.Validation;
+using Application.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Mc2.CrudTest.Presentation.Application;
+namespace Application;
 
 public static class DependencyInjection
 {

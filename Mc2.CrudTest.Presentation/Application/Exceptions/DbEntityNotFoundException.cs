@@ -1,4 +1,4 @@
-﻿namespace Mc2.CrudTest.Presentation.Application.Exceptions;
+﻿namespace Application.Exceptions;
 
 public class DbEntityNotFoundException : Exception
 {
