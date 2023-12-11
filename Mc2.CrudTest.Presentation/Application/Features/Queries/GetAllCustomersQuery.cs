@@ -28,6 +28,8 @@ public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery,
             .Customers
             .ToListAsync();
 
-        return _mapper.Map<IReadOnlyList<CustomerDto>>(customers);
+        var customerDtos = _mapper.Map<IReadOnlyList<CustomerDto>>(customers);
+
+        return customerDtos;
     }
 }

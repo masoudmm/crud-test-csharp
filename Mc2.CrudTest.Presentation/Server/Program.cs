@@ -1,6 +1,6 @@
 using Application;
 using Infrastructure;
-//using Server.Extentions;
+using Server.Extentions;
 using Server.Filters;
 
 namespace Mc2.CrudTest.Presentation
@@ -44,7 +44,7 @@ namespace Mc2.CrudTest.Presentation
             app.MapControllers();
             app.MapFallbackToFile("index.html");
 
-            //app.MapCustomerEndPoints();
+            app.MapCustomerEndPoints();
 
             app.Run();
         }
