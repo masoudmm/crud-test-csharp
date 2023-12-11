@@ -1,0 +1,155 @@
+﻿@page "/Customer/Edit/{id:int}"
+
+@using CustomerCrud.Application.Dtos;
+@using CustomerCrud.Application.Features.Commands.Edit;
+@using CustomerCrud.Application.ViewModels;
+@using CustomerCrud.Client.Models;
+@using System.Text.Json;
+
+<PageTitle>Edit Customer</PageTitle>
+
+<h1>Edit</h1>
+<br />
+
+@if (Model == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model=@Model OnValidSubmit=@ValidFormSubmitted>
+        <DataAnnotationsValidator />
+        @if (Errors is not null)
+        {
+            <ul class="validation-errors">
+                @foreach (var errorItem in Errors)
+                {
+                    <li class="validation-message">@errorItem.Key : @string.Join(", ", errorItem.Value)</li>
+                }
+            </ul>
+        }
+        
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <label class="form-label">First Name:</label>
+            <InputText class="form-control" @bind-Value="Model!.Firstname" />
+            <ValidationMessage For="() => Model!.Firstname" />
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <label class="form-label">Last Name:</label>
+            <InputText class="form-control" @bind-Value="Model!.Lastname" />
+            <ValidationMessage For="() => Model!.Lastname" />
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <div class="form-group">
+                <label class="form-label">Date Of Birth:</label>
+                <InputDate class="form-control" @bind-Value="Model!.DateOfBirth" />
+                <ValidationMessage For="() => Model!.DateOfBirth" />
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <div class="form-group">
+                <label class="form-label">Phone Number:</label>
+                <InputText class="form-control" @bind-Value="Model!.PhoneNumber" />
+                <ValidationMessage For="() => Model!.PhoneNumber" />
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <div class="form-group">
+                <label class="form-label">Email:</label>
+                <InputText class="form-control" @bind-Value="Model!.Email" />
+                <ValidationMessage For="() => Model!.Email" />
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
+            <div class="form-group">
+                <label class="form-label">Bank Account Number:</label>
+                <InputText class="form-control" @bind-Value="Model!.BankAccountNumber" />
+                <ValidationMessage For="() => Model!.BankAccountNumber" />
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Save" />
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private IDictionary<string, string[]>? Errors;
+    private EditCustomerViewModel? Model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var customerToEditDto = await Http.GetFromJsonAsync<CustomerDto>($"/api/Customers/{Id}");
+
+        Model = new EditCustomerViewModel
+        {
+            Id = customerToEditDto.Id,
+            Firstname = customerToEditDto.Firstname,
+            Lastname = customerToEditDto.Lastname,
+            DateOfBirth = customerToEditDto.DateOfBirth,
+            PhoneNumber = customerToEditDto.PhoneNumber,
+            Email = customerToEditDto.Email,
+            BankAccountNumber = customerToEditDto.BankAccountNumber
+        };
+    }
+
+    async void ValidFormSubmitted(EditContext editContext)
+    {
+        if (Model is null)
+        {
+            return;
+        }
+
+        var customerEditResponse = await Http.PutAsJsonAsync<EditCustomerCommand>($"/api/Customers/Edit", new EditCustomerCommand(Id,
+        Model.Firstname,
+        Model.Lastname,
+        Model.DateOfBirth,
+        Model.PhoneNumber,
+        Model.Email,
+        Model.BankAccountNumber));
+
+        if (customerEditResponse.IsSuccessStatusCode)
+        {
+            var editedCustomerDto = await customerEditResponse.Content.ReadFromJsonAsync<CustomerDto>();
+
+            Model = new EditCustomerViewModel
+            {
+                Id = editedCustomerDto.Id,
+                Firstname = editedCustomerDto.Firstname,
+                Lastname = editedCustomerDto.Lastname,
+                DateOfBirth = editedCustomerDto.DateOfBirth,
+                PhoneNumber = editedCustomerDto.PhoneNumber,
+                Email = editedCustomerDto.Email,
+                BankAccountNumber = editedCustomerDto.BankAccountNumber
+            };
+
+            Errors = null;
+        }
+        //TODO: Remove doublicate codes
+        //TODO: Handle other status codes
+        //TODO: Create a custom component for displaying errors
+        else if (customerEditResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            var validationProblemDetailsString = await customerEditResponse.Content.ReadAsStringAsync() ?? "{}";
+            var validationProblemDetails = JsonSerializer.Deserialize<ValidationProblemDetails>(validationProblemDetailsString);
+            Errors = validationProblemDetails?.Errors;
+        }
+        else if (customerEditResponse.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            var problemDetailsString = await customerEditResponse.Content.ReadAsStringAsync() ?? "{}";
+            var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(problemDetailsString);
+
+            Errors = new Dictionary<string, string[]>() { };
+            Errors.Add(problemDetails?.Title ?? "", new string[1] { problemDetails?.Detail ?? problemDetailsString ?? "ServerInternalError" });
+        }
+
+        StateHasChanged();
+    }
+}

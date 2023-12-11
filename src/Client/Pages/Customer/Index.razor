@@ -1,0 +1,80 @@
+﻿@page "/Customer/Index"
+@using CustomerCrud.Application.Dtos;
+@using CustomerCrud.Application.Features.Queries;
+@inject NavigationManager NavigationManager
+
+<PageTitle>Customers</PageTitle>
+
+<h1>Customers</h1>
+@if (!string.IsNullOrEmpty(message))
+{
+    <h3>@message</h3>
+}
+
+<div class="vh-100">
+    <button class="btn btn-primary" @onclick="@(() => NavigationManager.NavigateTo("/Customer/Create"))">
+        Create Customer
+    </button>
+
+    <hr />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@nameof(CustomerDto.Firstname)</th>
+                <th>@nameof(CustomerDto.Lastname)</th>
+                <th>@nameof(CustomerDto.DateOfBirth)</th>
+                <th>@nameof(CustomerDto.PhoneNumber)</th>
+                <th>@nameof(CustomerDto.Email)</th>
+                <th>@nameof(CustomerDto.BankAccountNumber)</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Customers)
+            {
+                var editUrl = $"Customer/Edit/{customer.Id}";
+                var deleteUrl = $"Customer/Delete/{customer.Id}";
+
+                <tr>
+                    <td>@customer.Firstname</td>
+                    <td>@customer.Lastname</td>
+                    <td>@customer.DateOfBirth.ToLongDateString()</td>
+                    <td>@customer.PhoneNumber</td>
+                    <td>@customer.Email</td>
+                    <td>@customer.BankAccountNumber</td>
+                    <td>
+                        <NavLink class="nav-link" href="@editUrl">
+                            <span class="mdi mdi-users" aria-hidden="true"></span> Edit
+                        </NavLink>
+
+                        <NavLink class="nav-link" href="javascript:void(0)" @onclick="() => DeleteCustomer(customer.Id)">
+                            <span class="mdi mdi-users" aria-hidden="true"></span> Delete
+                        </NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private string message = string.Empty;
+    private IReadOnlyList<CustomerDto> Customers = new List<CustomerDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Customers = await Http.GetFromJsonAsync<List<CustomerDto>>("/api/Customers");
+    }
+
+    protected async Task DeleteCustomer(int id)
+    {
+        var deletedCustomerId = await Http.DeleteFromJsonAsync<int>($"/api/Customers/Delete/{id}");
+        if (deletedCustomerId > 0)
+        {
+            message = $"Custome {deletedCustomerId} is deleted!";
+
+            StateHasChanged();
+        }
+    }
+}
