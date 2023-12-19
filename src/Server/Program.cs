@@ -1,7 +1,10 @@
 using Application.Extentions;
 using CustomerCrud.Infrastructure.Extentions;
-using Server.Extentions;
-using Server.Filters;
+using CustomerCrud.Server.Components;
+using CustomerCrud.Server.Extentions;
+using CustomerCrud.Server.Filters;
+using MudBlazor.Services;
+using System.Diagnostics.Metrics;
 
 namespace CustomerCrud.Server;
 
@@ -11,12 +14,17 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+        builder.Services.AddRazorComponents()
+            .AddInteractiveServerComponents()
+            .AddInteractiveWebAssemblyComponents();
 
         builder.Services.AddControllersWithViews();
-        builder.Services.AddRazorPages();
         builder.Services.AddApplication();
         builder.Services.AddInfrastructure(builder.Configuration);
+        
+        builder.Services.AddMudServices();
+
+        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7202") });
 
         var app = builder.Build();
 
@@ -32,17 +40,21 @@ public class Program
             app.UseHsts();
         }
 
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
         app.UseBlazorFrameworkFiles();
 
         app.UseStaticFiles();
 
         app.UseRouting();
+        app.UseAntiforgery();
         app.UseExceptionFilter();
 
-        app.MapRazorPages();
+        app.MapRazorComponents<App>()
+            .AddInteractiveServerRenderMode()
+            .AddInteractiveWebAssemblyRenderMode()
+            .AddAdditionalAssemblies(typeof(Client.Program).Assembly);
+
         app.MapControllers();
-        app.MapFallbackToFile("index.html");
 
         app.MapCustomerEndPoints();
 

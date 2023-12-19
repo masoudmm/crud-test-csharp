@@ -1,7 +1,7 @@
 ﻿using CustomerCrud.Application.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace Server.Filters;
+namespace CustomerCrud.Server.Filters;
 
 public static class ExceptionFilter
 {

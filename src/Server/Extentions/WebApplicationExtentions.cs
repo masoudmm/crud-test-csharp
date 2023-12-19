@@ -5,7 +5,7 @@ using CustomerCrud.Application.Features.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Server.Extentions;
+namespace CustomerCrud.Server.Extentions;
 
 public static class WebApplicationExtentions
 {
@@ -15,7 +15,7 @@ public static class WebApplicationExtentions
                 CancellationToken ct) =>
             sender.Send(new GetAllCustomersQuery(), ct))
                 .Produces<CustomerDto>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status500InternalServerError);
+                .ProducesProblem(StatusCodes.Status400BadRequest);
 
         app.MapGet("/api/Customers/{id:int}", (ISender sender,
             [FromRoute] int id,
