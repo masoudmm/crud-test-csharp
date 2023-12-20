@@ -1,8 +1,0 @@
-﻿@namespace CustomerCrud.Server.Components
-
-<Router AppAssembly="@typeof(Server.Program).Assembly" AdditionalAssemblies="new[] { typeof(Client.Pages.Index).Assembly }">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-</Router>

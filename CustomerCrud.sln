@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{F605A6D5-EED7-420E-9441-0910468D64E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerCrud.Infrastructure", "src\Infrastructure\CustomerCrud.Infrastructure.csproj", "{F605A6D5-EED7-420E-9441-0910468D64E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{5C3EB2DC-83FE-4524-B913-EAF64663EE47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerCrud.Application", "src\Application\CustomerCrud.Application.csproj", "{5C3EB2DC-83FE-4524-B913-EAF64663EE47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "src\Client\Client.csproj", "{37035ECA-66C6-4B11-8AB3-1833A7C9CA56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerCrud.Client", "src\Client\CustomerCrud.Client.csproj", "{37035ECA-66C6-4B11-8AB3-1833A7C9CA56}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcceptanceTests", "tests\AcceptanceTests\AcceptanceTests.csproj", "{50C0A77C-0C78-4465-A889-6F70EC75470B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{0439561A-29D1-4676-908F-ABD032E41EED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerCrud.Domain", "src\Domain\CustomerCrud.Domain.csproj", "{0439561A-29D1-4676-908F-ABD032E41EED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "src\Server\Server.csproj", "{F1668871-648B-436B-9988-EBD274035B82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerCrud.Server", "src\Server\CustomerCrud.Server.csproj", "{F1668871-648B-436B-9988-EBD274035B82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
