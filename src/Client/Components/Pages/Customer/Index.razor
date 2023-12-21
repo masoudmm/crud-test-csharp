@@ -14,53 +14,79 @@
 }
 
 <div class="vh-100">
-    <button class="btn btn-primary" @onclick="@(() => NavigationManager.NavigateTo("/Customer/Create"))">
-        Create Customer
-    </button>
-
-    <hr />
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>@nameof(CustomerDto.Firstname)</th>
-                <th>@nameof(CustomerDto.Lastname)</th>
-                <th>@nameof(CustomerDto.DateOfBirth)</th>
-                <th>@nameof(CustomerDto.PhoneNumber)</th>
-                <th>@nameof(CustomerDto.Email)</th>
-                <th>@nameof(CustomerDto.BankAccountNumber)</th>
-                <th>Options</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var customer in Customers)
-            {
-                var editUrl = $"Customer/Edit/{customer.Id}";
-                var deleteUrl = $"Customer/Delete/{customer.Id}";
-
-                <tr>
-                    <td>@customer.Firstname</td>
-                    <td>@customer.Lastname</td>
-                    <td>@customer.DateOfBirth.ToLongDateString()</td>
-                    <td>@customer.PhoneNumber</td>
-                    <td>@customer.Email</td>
-                    <td>@customer.BankAccountNumber</td>
-                    <td>
-                        <NavLink class="nav-link" href="@editUrl">
-                            <span class="mdi mdi-users" aria-hidden="true"></span> Edit
-                        </NavLink>
-
-                        <NavLink class="nav-link" href="javascript:void(0)" @onclick="() => DeleteCustomer(customer.Id)">
-                            <span class="mdi mdi-users" aria-hidden="true"></span> Delete
-                        </NavLink>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MudTable id="cutomers_table" @ref="customersTable" Items="Customers" Hover="true" SortLabel="Sort By" Elevation="0" Filter="new Func<CustomerDto,bool>(TableFilterFunction)">
+    <ToolBarContent>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => NavigationManager.NavigateTo("/Customer/Create"))"><MudText>Create New</MudText></MudButton>
+        <MudSpacer />
+        <SearchField @bind-SearchString="@cutomerSearchString"></SearchField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Id)">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Firstname)">Firstname</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Lastname)">Lastname</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Email)">Email</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.PhoneNumber)">BankAccountNumber</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.BankAccountNumber)">BankAccountNumber</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.DateOfBirth)">DateOfBirth</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Firstname">@context.Firstname</MudTd>
+            <MudTd DataLabel="Lastname">@context.Lastname</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+            <MudTd DataLabel="BankAccountNumber">@context.BankAccountNumber</MudTd>
+            <MudTd DataLabel="DateOfBirth">@context.DateOfBirth</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{10, 20, 50}" />
+        </PagerContent>
+    </MudTable>
 </div>
 
-@code {
+    @code {
+    public Action<int> SendDeleteUserRequest { get; set; }
+
+    public MudTable<CustomerDto> customersTable { get; set; }
+
+    private string cutomerSearchString = "";
+
+    private bool TableFilterFunction(CustomerDto element)
+        => UserFilterFunc(element, cutomerSearchString);
+
+    private bool UserFilterFunc(CustomerDto element,
+        string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        if (element.Firstname.Contains(searchString,
+            StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.Lastname.Contains(searchString,
+            StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.PhoneNumber.Contains(searchString,
+            StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.Email.Contains(searchString,
+            StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.BankAccountNumber.Contains(searchString,
+            StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.DateOfBirth.Date.ToShortDateString().Equals(searchString,
+            StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
     private string message = string.Empty;
     private IReadOnlyList<CustomerDto> Customers = new List<CustomerDto>();
 

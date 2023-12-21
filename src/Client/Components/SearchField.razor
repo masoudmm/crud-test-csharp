@@ -1,0 +1,27 @@
+﻿@namespace CustomerCrud.Client.Components
+
+<MudTextField id="search_input" @bind-Value="SearchString" Immediate Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+ @code {
+    private string _searchString;
+
+    [Parameter]
+    public string SearchString
+    {
+        get => _searchString;
+        set
+        {
+            if (_searchString == value)
+            {
+                return;
+            }
+
+            _searchString = value;
+            
+            SearchStringChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> SearchStringChanged { get; set; }
+}
