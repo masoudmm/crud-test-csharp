@@ -10,7 +10,8 @@ public static class ServiceCollectionExtentions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         Assembly applicationAssembly = typeof(ServiceCollectionExtentions).Assembly;
-        services.AddAutoMapper(applicationAssembly);
+
+        AddAutoMapper(services);
 
         services.AddValidatorsFromAssembly(applicationAssembly);
 
@@ -19,6 +20,14 @@ public static class ServiceCollectionExtentions
             config.RegisterServicesFromAssembly(applicationAssembly);
             config.AddOpenBehavior(typeof(CustomerValidationBehavior<,>));
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddAutoMapper(this IServiceCollection services)
+    {
+        Assembly applicationAssembly = typeof(ServiceCollectionExtentions).Assembly;
+        services.AddAutoMapper(applicationAssembly);
 
         return services;
     }

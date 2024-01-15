@@ -2,6 +2,7 @@
 
 @namespace CustomerCrud.Client.Components.Pages.Customer
 
+@using AutoMapper
 @using CustomerCrud.Application.Dtos;
 @using CustomerCrud.Application.Features.Commands.Edit;
 @using CustomerCrud.Application.ViewModels;
@@ -12,84 +13,48 @@
 <h1>Edit</h1>
 <br />
 
-@if (Model == null)
+@if (CustomerToEdit == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <EditForm Model=@Model OnValidSubmit=@ValidFormSubmitted>
-        <DataAnnotationsValidator />
-        @if (Errors is not null)
-        {
-            <ul class="validation-errors">
-                @foreach (var errorItem in Errors)
-                {
-                    <li class="validation-message">@errorItem.Key : @string.Join(", ", errorItem.Value)</li>
-                }
-            </ul>
-        }
-        
-        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
-            <label class="form-label">First Name:</label>
-            <InputText class="form-control" @bind-Value="Model!.Firstname" />
-            <ValidationMessage For="() => Model!.Firstname" />
-        </div>
+    <MudCard>
+        <MudCardContent>
+            <MudForm Model="@CustomerToEdit" @ref="editForm">
+                <MudTextField @bind-Value="CustomerToEdit.Firstname" For="@(() => CustomerToEdit.Firstname)" Immediate="true" Label="Firstname" />
+                <MudTextField @bind-Value="CustomerToEdit.Lastname" For="@(() => CustomerToEdit.Lastname)" Immediate="true" Label="Lastname" />
+                <MudDatePicker For="@(() => CustomerToEdit.DateOfBirth)" />
+                <MudTextField @bind-Value="CustomerToEdit.PhoneNumber" For="@(() => CustomerToEdit.PhoneNumber)" Immediate="true" Label="PhoneNumber" />
+                <MudTextField @bind-Value="CustomerToEdit.Email" For="@(() => CustomerToEdit.Email)" Immediate="true" Label="Email" />
+                <MudTextField @bind-Value="CustomerToEdit.BankAccountNumber" For="@(() => CustomerToEdit.BankAccountNumber)" Immediate="true" Label="BankAccountNumber" />
+            </MudForm>
+        </MudCardContent>
 
-        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
-            <label class="form-label">Last Name:</label>
-            <InputText class="form-control" @bind-Value="Model!.Lastname" />
-            <ValidationMessage For="() => Model!.Lastname" />
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
-            <div class="form-group">
-                <label class="form-label">Date Of Birth:</label>
-                <InputDate class="form-control" @bind-Value="Model!.DateOfBirth" />
-                <ValidationMessage For="() => Model!.DateOfBirth" />
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
-            <div class="form-group">
-                <label class="form-label">Phone Number:</label>
-                <InputText class="form-control" @bind-Value="Model!.PhoneNumber" />
-                <ValidationMessage For="() => Model!.PhoneNumber" />
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
-            <div class="form-group">
-                <label class="form-label">Email:</label>
-                <InputText class="form-control" @bind-Value="Model!.Email" />
-                <ValidationMessage For="() => Model!.Email" />
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-md-5 mb-4">
-            <div class="form-group">
-                <label class="form-label">Bank Account Number:</label>
-                <InputText class="form-control" @bind-Value="Model!.BankAccountNumber" />
-                <ValidationMessage For="() => Model!.BankAccountNumber" />
-            </div>
-        </div>
-
-        <input type="submit" class="btn btn-primary" value="Save" />
-    </EditForm>
+        <MudCardActions>
+            <MudButton Variant="Variant.Outlined" OnClick="(() => ValidFormSubmitted())" Color="Color.Primary">Save</MudButton>
+        </MudCardActions>
+    </MudCard>
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
+    [Inject]
+    private IMapper Mapper { get; set; }
+
+
+    MudForm editForm;
+
     private IDictionary<string, string[]>? Errors;
-    private EditCustomerViewModel? Model;
+    private EditCustomerViewModel? CustomerToEdit;
 
     protected override async Task OnInitializedAsync()
     {
         var customerToEditDto = await Http.GetFromJsonAsync<CustomerDto>($"/api/Customers/{Id}");
 
-        Model = new EditCustomerViewModel
+        CustomerToEdit = new EditCustomerViewModel
         {
             Id = customerToEditDto.Id,
             Firstname = customerToEditDto.Firstname,
@@ -101,38 +66,26 @@ else
         };
     }
 
-    async void ValidFormSubmitted(EditContext editContext)
+    async void ValidFormSubmitted()
     {
-        if (Model is null)
+        if (editForm.Model is null)
         {
             return;
         }
 
-        var customerEditResponse = await Http.PutAsJsonAsync<EditCustomerCommand>($"/api/Customers/Edit", new EditCustomerCommand(Id,
-        Model.Firstname,
-        Model.Lastname,
-        Model.DateOfBirth,
-        Model.PhoneNumber,
-        Model.Email,
-        Model.BankAccountNumber));
+        var customerEditResponse = await Http
+            .PutAsJsonAsync<EditCustomerCommand>($"/api/Customers/Edit",
+            Mapper.Map<EditCustomerCommand>(CustomerToEdit));
 
         if (customerEditResponse.IsSuccessStatusCode)
         {
             var editedCustomerDto = await customerEditResponse.Content.ReadFromJsonAsync<CustomerDto>();
 
-            Model = new EditCustomerViewModel
-            {
-                Id = editedCustomerDto.Id,
-                Firstname = editedCustomerDto.Firstname,
-                Lastname = editedCustomerDto.Lastname,
-                DateOfBirth = editedCustomerDto.DateOfBirth,
-                PhoneNumber = editedCustomerDto.PhoneNumber,
-                Email = editedCustomerDto.Email,
-                BankAccountNumber = editedCustomerDto.BankAccountNumber
-            };
+            CustomerToEdit = Mapper.Map<EditCustomerViewModel>(editedCustomerDto);
 
             Errors = null;
         }
+
         //TODO: Remove doublicate codes
         //TODO: Handle other status codes
         //TODO: Create a custom component for displaying errors

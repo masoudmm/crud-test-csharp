@@ -12,6 +12,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Client\CustomerCrud.Client.csproj" />
+		<ProjectReference Include="..\Infrastructure\CustomerCrud.Infrastructure.csproj" />
 	</ItemGroup>
 
   <ItemGroup>

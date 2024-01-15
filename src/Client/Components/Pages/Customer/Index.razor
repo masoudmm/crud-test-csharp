@@ -14,95 +14,42 @@
 }
 
 <div class="vh-100">
-    <MudTable id="cutomers_table" @ref="customersTable" Items="Customers" Hover="true" SortLabel="Sort By" Elevation="0" Filter="new Func<CustomerDto,bool>(TableFilterFunction)">
-    <ToolBarContent>
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => NavigationManager.NavigateTo("/Customer/Create"))"><MudText>Create New</MudText></MudButton>
-        <MudSpacer />
-        <SearchField @bind-SearchString="@cutomerSearchString"></SearchField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Id)">Id</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Firstname)">Firstname</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Lastname)">Lastname</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Email)">Email</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.PhoneNumber)">BankAccountNumber</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.BankAccountNumber)">BankAccountNumber</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.DateOfBirth)">DateOfBirth</MudTableSortLabel></MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Id">@context.Id</MudTd>
-            <MudTd DataLabel="Firstname">@context.Firstname</MudTd>
-            <MudTd DataLabel="Lastname">@context.Lastname</MudTd>
-            <MudTd DataLabel="Email">@context.Email</MudTd>
-            <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
-            <MudTd DataLabel="BankAccountNumber">@context.BankAccountNumber</MudTd>
-            <MudTd DataLabel="DateOfBirth">@context.DateOfBirth</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{10, 20, 50}" />
-        </PagerContent>
-    </MudTable>
+    <MudCard>
+        <MudCardContent>
+            <MudTable id="cutomers_table" @ref="customersTable" Items="Customers" Hover="true" SortLabel="Sort By" Elevation="0" Filter="new Func<CustomerDto,bool>(TableFilterFunction)" EditTrigger="TableEditTrigger.EditButton">
+                <ToolBarContent>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => NavigationManager.NavigateTo("/Customer/Create"))"><MudText>Create New</MudText></MudButton>
+                    <MudSpacer />
+                    <SearchField @bind-SearchString="@cutomerSearchString"></SearchField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Id)">Id</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Firstname)">Firstname</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Lastname)">Lastname</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.Email)">Email</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.PhoneNumber)">BankAccountNumber</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.BankAccountNumber)">BankAccountNumber</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<CustomerDto, object>(x=>x.DateOfBirth)">DateOfBirth</MudTableSortLabel></MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Id">@context.Id</MudTd>
+                        <MudTd DataLabel="Firstname">@context.Firstname</MudTd>
+                        <MudTd DataLabel="Lastname">@context.Lastname</MudTd>
+                        <MudTd DataLabel="Email">@context.Email</MudTd>
+                        <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+                        <MudTd DataLabel="BankAccountNumber">@context.BankAccountNumber</MudTd>
+                        <MudTd DataLabel="DateOfBirth">@context.DateOfBirth</MudTd>
+                        <MudTd DataLabel="">
+                            <MudFab @onclick="@(()=> Edit(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+                            <MudFab @onclick="@(()=> SendDeleteUserRequest(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+                        </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[]{10, 20, 50}" />
+                </PagerContent>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
 </div>
 
-    @code {
-    public Action<int> SendDeleteUserRequest { get; set; }
-
-    public MudTable<CustomerDto> customersTable { get; set; }
-
-    private string cutomerSearchString = "";
-
-    private bool TableFilterFunction(CustomerDto element)
-        => UserFilterFunc(element, cutomerSearchString);
-
-    private bool UserFilterFunc(CustomerDto element,
-        string searchString)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-
-        if (element.Firstname.Contains(searchString,
-            StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (element.Lastname.Contains(searchString,
-            StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (element.PhoneNumber.Contains(searchString,
-            StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (element.Email.Contains(searchString,
-            StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (element.BankAccountNumber.Contains(searchString,
-            StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (element.DateOfBirth.Date.ToShortDateString().Equals(searchString,
-            StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return false;
-    }
-
-    private string message = string.Empty;
-    private IReadOnlyList<CustomerDto> Customers = new List<CustomerDto>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        Customers = await Http.GetFromJsonAsync<List<CustomerDto>>("/api/Customers");
-    }
-
-    protected async Task DeleteCustomer(int id)
-    {
-        var deletedCustomerId = await Http.DeleteFromJsonAsync<int>($"/api/Customers/Delete/{id}");
-        if (deletedCustomerId > 0)
-        {
-            message = $"Custome {deletedCustomerId} is deleted!";
-
-            StateHasChanged();
-        }
-    }
-}
