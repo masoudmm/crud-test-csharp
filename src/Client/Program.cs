@@ -2,6 +2,8 @@ using CustomerCrud.Application.Features.Commands.Edit;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using Application.Extentions;
+using System.Reflection;
+using FluentValidation;
 
 namespace CustomerCrud.Client;
 
@@ -15,7 +17,8 @@ public class Program
 
         builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-        builder.Services.AddAutoMapper();
+        builder.Services.AddApplicationValidators();
+        builder.Services.AddApplicationAutoMapper();
 
         await builder.Build().RunAsync();
     }

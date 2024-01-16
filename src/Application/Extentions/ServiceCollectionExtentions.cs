@@ -7,27 +7,42 @@ namespace Application.Extentions;
 
 public static class ServiceCollectionExtentions
 {
+    private static Assembly applicationAssembly = typeof(ServiceCollectionExtentions).Assembly;
+
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        Assembly applicationAssembly = typeof(ServiceCollectionExtentions).Assembly;
+        services.AddAutoMapper(applicationAssembly);
+        services.AddApplicationAutoMapper();
 
-        AddAutoMapper(services);
 
+        services.AddApplicationValidators();
+
+        services.AddMediatR();
+
+        return services;
+    }
+
+    public static IServiceCollection AddApplicationAutoMapper(this IServiceCollection services)
+    {
+        services.AddAutoMapper(applicationAssembly);
+
+        return services;
+    }
+
+    public static IServiceCollection AddApplicationValidators(this IServiceCollection services)
+    {
         services.AddValidatorsFromAssembly(applicationAssembly);
 
+        return services;
+    }
+
+    private static IServiceCollection AddMediatR(this IServiceCollection services)
+    {
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(applicationAssembly);
             config.AddOpenBehavior(typeof(CustomerValidationBehavior<,>));
         });
-
-        return services;
-    }
-
-    public static IServiceCollection AddAutoMapper(this IServiceCollection services)
-    {
-        Assembly applicationAssembly = typeof(ServiceCollectionExtentions).Assembly;
-        services.AddAutoMapper(applicationAssembly);
 
         return services;
     }
