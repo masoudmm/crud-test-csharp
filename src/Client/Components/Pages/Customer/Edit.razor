@@ -22,9 +22,11 @@ else
     <MudCard>
         <MudCardContent>
             <MudForm Model="@CustomerToEdit" @ref="editForm">
+                <FluentValidationValidator/>
                 <MudTextField @bind-Value="CustomerToEdit.Firstname" For="@(() => CustomerToEdit.Firstname)" Immediate="true" Label="Firstname" />
                 <MudTextField @bind-Value="CustomerToEdit.Lastname" For="@(() => CustomerToEdit.Lastname)" Immediate="true" Label="Lastname" />
-                <MudDatePicker For="@(() => CustomerToEdit.DateOfBirth)" />
+
+                <MudDatePicker Date="@CustomerToEdit.DateOfBirth" />
                 <MudTextField @bind-Value="CustomerToEdit.PhoneNumber" For="@(() => CustomerToEdit.PhoneNumber)" Immediate="true" Label="PhoneNumber" />
                 <MudTextField @bind-Value="CustomerToEdit.Email" For="@(() => CustomerToEdit.Email)" Immediate="true" Label="Email" />
                 <MudTextField @bind-Value="CustomerToEdit.BankAccountNumber" For="@(() => CustomerToEdit.BankAccountNumber)" Immediate="true" Label="BankAccountNumber" />

@@ -27,5 +27,24 @@ public class CustomerMapping : Profile
             .ForMember(c => c.PhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(c => c.Email, opt => opt.MapFrom(s => s.Email))
             .ForMember(c => c.BankAccountNumber, opt => opt.MapFrom(s => s.BankAccountNumber));
+
+
+        CreateMap<CustomerDto, EditCustomerViewModel>()
+            .ForMember(c => c.Id, opt => opt.MapFrom(s => s.Id))
+            .ForMember(c => c.Firstname, opt => opt.MapFrom(s => s.Firstname))
+            .ForMember(c => c.Lastname, opt => opt.MapFrom(s => s.Lastname))
+            .ForMember(c => c.DateOfBirth, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(c => c.PhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            .ForMember(c => c.Email, opt => opt.MapFrom(s => s.Email))
+            .ForMember(c => c.BankAccountNumber, opt => opt.MapFrom(s => s.BankAccountNumber));
+
+        CreateMap<EditCustomerViewModel, EditCustomerCommand>()
+            .ForMember(c => c.Id, opt => opt.MapFrom(s => s.Id))
+            .ForMember(c => c.Firstname, opt => opt.MapFrom(s => s.Firstname))
+            .ForMember(c => c.Lastname, opt => opt.MapFrom(s => s.Lastname))
+            .ForMember(c => c.DateOfBirth, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(c => c.PhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            .ForMember(c => c.Email, opt => opt.MapFrom(s => s.Email))
+            .ForMember(c => c.BankAccountNumber, opt => opt.MapFrom(s => s.BankAccountNumber));
     }
 }
